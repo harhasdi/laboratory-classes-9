@@ -1,21 +1,23 @@
-const express = require("express");
-// const cors = require("cors");
-const dotenv = require("dotenv");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-const bookRoutes = require("./routes/bookRoutes");
-const authorRoutes = require("./routes/authorRoutes");
+const bookRoutes = require('./routes/bookRoutes');
+const authorRoutes = require('./routes/authorRoutes');
 
-dotenv.config();
-
-const PORT = process.env.PORT || 3001;
+mongoose.connect('mongodb://127.0.0.1:27017/lab9', {
+  useNewUrlParser: true, useUnifiedTopology: true
+});
 
 const app = express();
-// app.use();
-app.use(express.json());
+app.use(cors(), express.json());
 
-app.use("/api/books", bookRoutes);
-app.use("/api/authors", authorRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/authors', authorRoutes);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err.message });
 });
+
+app.listen(3000, () => console.log('Server on port 3000'));
